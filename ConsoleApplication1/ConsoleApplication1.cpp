@@ -8,12 +8,9 @@ using namespace std;
 int main() {
 	srand(time(NULL));
 
-	const int n = 10; //numero di località
+	const int numero_localita = 10; //numero di località
+	const int numero_cromosomi = 5;
 
-	/*
-	cout << "inserire numero di localita'" << endl;
-	cin >> n;
-	*/
 #if 0
 	int coordinate[n][2];
 	double distanze[n][n];
@@ -49,16 +46,13 @@ int main() {
 		cout << endl;
 	}
 #endif
-	int gen1[n][5];
 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < 5; j++) {
-			gen1[i][j]=11;
-		}
-	}
+	//Creazione di 5 "cromosomi" random contenenti tutte le località senza ripetizione
 
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < 5; j++) {
+	int gen1[numero_cromosomi][numero_localita];
+
+	for (int i = 0; i < numero_cromosomi; i++) {
+		for (int j = 0; j < numero_localita; j++) {
 			gen1[i][j] = rand() % 10;
 			for (int a = 0; a < j; a++) {
 				if (gen1[i][j]==gen1[i][a]) {
@@ -68,8 +62,8 @@ int main() {
 			}
 		}
 	}
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < 5; j++) {
+	for (int i = 0; i < numero_cromosomi; i++) {
+		for (int j = 0; j < numero_localita; j++) {
 			cout << gen1[i][j] << " ";
 		}
 		cout<<endl;
