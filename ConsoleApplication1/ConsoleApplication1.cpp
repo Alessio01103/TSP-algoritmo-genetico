@@ -112,6 +112,7 @@ int main() {
 
 //funzione di fitness
 
+
 	return 0;
 }
 
