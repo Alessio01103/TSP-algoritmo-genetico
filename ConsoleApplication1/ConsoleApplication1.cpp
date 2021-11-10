@@ -3,6 +3,7 @@
 #include <Cmath>
 #include <cstdlib>
 #include <ctime>
+#include <vector>
 using namespace std;
 
 int main() {
@@ -112,7 +113,69 @@ int main() {
 
 //funzione di fitness
 
+	int cromosoma1=0;
+	int cromosoma2=0;
 
+	do {
+		cromosoma1 = rand() % numero_cromosomi;
+		cromosoma2 = rand() % numero_cromosomi;
+	} while (cromosoma1 == cromosoma2);
+
+	int a_cromosoma1[numero_localita];
+	int a_cromosoma2[numero_localita];
+
+	for (int i = 0; i < numero_localita; i++) {
+		a_cromosoma1[i] = gen1[cromosoma1][i];
+		a_cromosoma2[i] = gen1[cromosoma2][i];
+	}
+
+	int punto_di_slice = 0;
+	while (punto_di_slice == 0) {
+		punto_di_slice = rand() % (numero_localita / 2);
+	}
+
+	cout << punto_di_slice << endl;
+
+
+
+
+	cout << cromosoma1 << "  " << cromosoma2 << endl;
+
+	for (int i = 0; i < numero_localita; i++) {
+		cout<<a_cromosoma1[i];
+	}
+	cout << endl;
+	for (int i = 0; i < numero_localita; i++) {
+		cout << a_cromosoma2[i];
+	}
+	cout << endl;
+	cout << endl;
+	cout << endl;
+
+
+	vector<int> temp_dx;
+	vector<int> temp_sx;
+	
+	for (int i = 0; i < punto_di_slice; i++) {
+		temp_sx.push_back(a_cromosoma1[i]);
+	}
+	
+	for (int i = numero_localita; i < numero_localita - punto_di_slice; i--) {
+		temp_dx.push_back(a_cromosoma1[i]);
+
+	}
+
+	cout << "parte iniziale:" << endl;
+
+	for (int i = 0; i < temp_dx.size(); i++) {
+		cout << temp_dx[i];
+	}
+	cout << "parte finale:" << endl;
+
+	
+	for (int i = 0; i < temp_sx.size(); i++) {
+		cout << temp_sx[i];
+	}
 	return 0;
 }
 
