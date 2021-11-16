@@ -52,14 +52,14 @@ int main() {
 #endif
 
 	//stampo le coordinate
-
+#if 0
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < numero_localita; j++) {
 			cout<<coordinate[j][i] << " ";
 		}
 		cout << endl;
 	}
-
+#endif
 	//calcolo le distanze
 #if 0
 	for (int i = 0; i < numero_localita; i++) {
@@ -78,6 +78,7 @@ int main() {
 	}
 #endif
 	//stampo la matrice con le distanze
+	cout << "matrice distanze: " << endl;
 
 	for (int i = 0; i < numero_localita; i++) {
 		for (int j = 0; j < numero_localita; j++) {
@@ -103,7 +104,7 @@ int main() {
 	}
 
 	//stampa la matrice di cromosomi
-
+	cout << "cromosomi: " << endl;
 	for (int i = 0; i < numero_cromosomi; i++) {
 		for (int j = 0; j < numero_localita; j++) {
 			cout << gen1[i][j] << " ";
@@ -113,20 +114,20 @@ int main() {
 
 //funzione di fitness
 
-	int cromosoma1=0;
-	int cromosoma2=0;
+	int cromosoma_ricombinante=0;
+	int cromosoma_riferimento=0;
 
 	do {
-		cromosoma1 = rand() % numero_cromosomi;
-		cromosoma2 = rand() % numero_cromosomi;
-	} while (cromosoma1 == cromosoma2);
+		cromosoma_ricombinante = rand() % numero_cromosomi;
+		cromosoma_riferimento = rand() % numero_cromosomi;
+	} while (cromosoma_ricombinante == cromosoma_riferimento);
 
-	int a_cromosoma1[numero_localita];
-	int a_cromosoma2[numero_localita];
+	int a_cromosoma_ricombinante[numero_localita];
+	int a_cromosoma_riferimento[numero_localita];
 
 	for (int i = 0; i < numero_localita; i++) {
-		a_cromosoma1[i] = gen1[cromosoma1][i];
-		a_cromosoma2[i] = gen1[cromosoma2][i];
+		a_cromosoma_ricombinante[i] = gen1[cromosoma_ricombinante][i];
+		a_cromosoma_riferimento[i] = gen1[cromosoma_riferimento][i];
 	}
 
 	int punto_di_slice = 0;
@@ -134,35 +135,38 @@ int main() {
 		punto_di_slice = rand() % (numero_localita / 2);
 	}
 
+	cout << "punto di slice: ";
 	cout << punto_di_slice << endl;
-
-
-
-
-	cout << cromosoma1 << "  " << cromosoma2 << endl;
-
+	cout << "numero cromosoma ricombinante: "<<endl;
+	cout << cromosoma_ricombinante << endl<< "numero cromosoma di riferimento: " << endl << cromosoma_riferimento << endl;
+	cout << "cromosoma ricombinante: " << endl;
 	for (int i = 0; i < numero_localita; i++) {
-		cout<<a_cromosoma1[i];
+		cout<<a_cromosoma_ricombinante[i];
 	}
-	cout << endl;
+	cout <<endl<< "cromosoma di riferimento: " << endl;
 	for (int i = 0; i < numero_localita; i++) {
-		cout << a_cromosoma2[i];
+		cout << a_cromosoma_riferimento[i];
 	}
 	cout << endl;
 	cout << endl;
 	cout << endl;
 
 	vector<int> temp_dx;
-	vector<int> temp_sx;
+	vector<int> vettore_da_ricombinare;
+	vector<int> parte_centrale;
 
 	//trovo l'estremo finale del cromosoma
 	for (int i = 0; i < punto_di_slice; i++) {
-		temp_dx.push_back(a_cromosoma1[i]);
+		temp_dx.push_back(a_cromosoma_ricombinante[i]);
 	}
 	
 	//trovo l'estremo iniziale del cromosoma
 	for (int i = numero_localita-1; i >= numero_localita - punto_di_slice; i--) {
-		temp_sx.push_back(a_cromosoma1[i]);
+		vettore_da_ricombinare.push_back(a_cromosoma_ricombinante[i]);
+	}
+
+	for (int i = punto_di_slice; i < numero_localita - punto_di_slice; i++) {
+		parte_centrale.push_back(a_cromosoma_ricombinante[i]);
 	}
 
 	//stampa vector temp_dx
@@ -176,17 +180,28 @@ int main() {
 	//stampa vector temp_sx
 	cout << "parte finale:" << endl;
 
-	for (int i = 0; i < temp_sx.size(); i++) {
-		cout << temp_sx[i];
+	for (int i = 0; i < vettore_da_ricombinare.size(); i++) {
+		cout << vettore_da_ricombinare[i];
 	}
 	cout << endl;
 
-	temp_sx.insert(temp_sx.end(), temp_dx.begin(), temp_dx.end());
+	//stampa vector temp_sx
+	cout << "parte centrale:" << endl;
+
+	for (int i = 0; i < parte_centrale.size(); i++) {
+		cout << parte_centrale[i];
+	}
+	cout << endl;
+
+	vettore_da_ricombinare.insert(vettore_da_ricombinare.end(), temp_dx.begin(), temp_dx.end());
 
 	//stampa vector concatenato
+	cout << "parte iniziale e finale concatenata:  "<<endl;
 	for (int i = 0; i < punto_di_slice * 2; i++) {
-		cout << temp_sx[i];
+		cout << vettore_da_ricombinare[i];
 	}
+
+	//bisogna prendere il vettore da ricombinare e riordinarlo in base al cromosoma numero 2
 
 	return 0;
 }
