@@ -10,7 +10,7 @@ int main() {
 
 	srand(time(NULL));
 
-	const int numero_localita = 10; //numero di località
+	const int numero_localita = 12; //numero di località
 	const int numero_cromosomi = 5;
 
 //inserimento coordinate delle località e calcolo della matrice con le distanze tra ogni singola località
@@ -40,7 +40,7 @@ int main() {
 
 	for (int i = 0; i < numero_localita; i++) {
 		for (int j = 0; j < numero_localita; j++) {
-			int a = rand() % 10;
+			int a = rand() % numero_localita;
 			distanze[j][i] = a;
 			distanze[i][j] = a;
 			if (i==j) {
@@ -93,7 +93,7 @@ int main() {
 
 	for (int i = 0; i < numero_cromosomi; i++) {
 		for (int j = 0; j < numero_localita; j++) {
-			gen1[i][j] = rand() % 10; //genero un numero random compreso tra 0 e 9
+			gen1[i][j] = rand() % numero_localita; //genero un numero random compreso tra 0 e 9
 			for (int a = 0; a < j; a++) { //controllo che non ci siano ripetizioni
 				if (gen1[i][j]==gen1[i][a]) {
 					j--; //se ci sono ripetizioni torno indietro di una cella e esco dal ciclo, altrimenti vado avanti
@@ -112,7 +112,6 @@ int main() {
 		cout<<endl;
 	}
 
-//funzione di fitness
 
 	int cromosoma_ricombinante=0;
 	int cromosoma_riferimento=0;
@@ -202,6 +201,25 @@ int main() {
 	}
 
 	//bisogna prendere il vettore da ricombinare e riordinarlo in base al cromosoma numero 2
+	int j = 0;
+	int temp;
+	while (j < punto_di_slice * 2) {
+		for (int i = 0; i < numero_localita - 1; i++) {
+			for (int k = j; k < punto_di_slice * 2; k++) {
+				if (a_cromosoma_riferimento[i] == vettore_da_ricombinare[k]) {
+					temp = vettore_da_ricombinare[j];
+					vettore_da_ricombinare[j] = vettore_da_ricombinare[k];
+					vettore_da_ricombinare[k] = temp;
+					j++;
+				}
+			}
+		}
+	}
+
+	cout << "parte iniziale e finale riordinata:  " << endl;
+	for (int i = 0; i < punto_di_slice * 2; i++) {
+		cout << vettore_da_ricombinare[i];
+	}
 
 	return 0;
 }
