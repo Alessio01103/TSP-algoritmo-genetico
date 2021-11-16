@@ -154,15 +154,18 @@ int main() {
 
 	vector<int> temp_dx;
 	vector<int> temp_sx;
-	
+
+	//trovo l'estremo finale del cromosoma
 	for (int i = 0; i < punto_di_slice; i++) {
 		temp_dx.push_back(a_cromosoma1[i]);
 	}
 	
+	//trovo l'estremo iniziale del cromosoma
 	for (int i = numero_localita-1; i >= numero_localita - punto_di_slice; i--) {
 		temp_sx.push_back(a_cromosoma1[i]);
 	}
 
+	//stampa vector temp_dx
 	cout << "parte iniziale:" << endl;
 
 	for (int i = 0; i < temp_dx.size(); i++) {
@@ -170,12 +173,21 @@ int main() {
 	}
 	cout << endl;
 
+	//stampa vector temp_sx
 	cout << "parte finale:" << endl;
 
-	
 	for (int i = 0; i < temp_sx.size(); i++) {
 		cout << temp_sx[i];
 	}
+	cout << endl;
+
+	temp_sx.insert(temp_sx.end(), temp_dx.begin(), temp_dx.end());
+
+	//stampa vector concatenato
+	for (int i = 0; i < punto_di_slice * 2; i++) {
+		cout << temp_sx[i];
+	}
+
 	return 0;
 }
 
