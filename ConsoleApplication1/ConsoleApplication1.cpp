@@ -152,17 +152,15 @@ int main() {
 	cout << endl;
 	cout << endl;
 
-
 	vector<int> temp_dx;
 	vector<int> temp_sx;
 	
 	for (int i = 0; i < punto_di_slice; i++) {
-		temp_sx.push_back(a_cromosoma1[i]);
+		temp_dx.push_back(a_cromosoma1[i]);
 	}
 	
-	for (int i = numero_localita; i < numero_localita - punto_di_slice; i--) {
-		temp_dx.push_back(a_cromosoma1[i]);
-
+	for (int i = numero_localita-1; i >= numero_localita - punto_di_slice; i--) {
+		temp_sx.push_back(a_cromosoma1[i]);
 	}
 
 	cout << "parte iniziale:" << endl;
@@ -170,6 +168,8 @@ int main() {
 	for (int i = 0; i < temp_dx.size(); i++) {
 		cout << temp_dx[i];
 	}
+	cout << endl;
+
 	cout << "parte finale:" << endl;
 
 	
