@@ -10,7 +10,7 @@ int main() {
 
 	srand(time(NULL));
 
-	const int numero_localita = 12; //numero di località
+	const int numero_localita = 10; //numero di località
 	const int numero_cromosomi = 5;
 
 //inserimento coordinate delle località e calcolo della matrice con le distanze tra ogni singola località
@@ -128,12 +128,12 @@ int main() {
 		a_cromosoma_ricombinante[i] = gen1[cromosoma_ricombinante][i];
 		a_cromosoma_riferimento[i] = gen1[cromosoma_riferimento][i];
 	}
-
-	int punto_di_slice = 0;
+	//selezione del punto di slice
+	int punto_di_slice = 3;
 	while (punto_di_slice == 0) {
 		punto_di_slice = rand() % (numero_localita / 2);
 	}
-
+	
 	cout << "punto di slice: ";
 	cout << punto_di_slice << endl;
 	cout << "numero cromosoma ricombinante: "<<endl;
@@ -201,6 +201,7 @@ int main() {
 	}
 
 	//bisogna prendere il vettore da ricombinare e riordinarlo in base al cromosoma numero 2
+
 	int j = 0;
 	int temp;
 	while (j < punto_di_slice * 2) {
@@ -216,10 +217,32 @@ int main() {
 		}
 	}
 
-	cout << "parte iniziale e finale riordinata:  " << endl;
+	cout << endl << "parte iniziale e finale riordinata:  " << endl;
 	for (int i = 0; i < punto_di_slice * 2; i++) {
 		cout << vettore_da_ricombinare[i];
 	}
+#if 1
+	cout << endl;
+
+	int a_cromosoma_ricombinato[numero_localita];
+
+	for (int i = 0; i < punto_di_slice; i++) {
+		a_cromosoma_ricombinato[i] = vettore_da_ricombinare[i];
+	}
+
+	for (int i = 0; i < parte_centrale.size(); i++) {
+		a_cromosoma_ricombinato[i + punto_di_slice] = parte_centrale[i];
+	}
+
+	for (int i = punto_di_slice; i < punto_di_slice * 2; i++) {
+		a_cromosoma_ricombinato[i + parte_centrale.size()] = vettore_da_ricombinare[i];
+	}
+
+	cout << "cromosoma riordinato" << endl;
+	for (int i = 0; i < numero_localita; i++) {
+		cout << a_cromosoma_ricombinato[i];
+	}
+#endif
 
 	return 0;
 }
