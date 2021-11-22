@@ -7,6 +7,21 @@
 #include <vector>
 using namespace std;
 
+void crea_generazione(int * generazione, int num_loc, int num_crom) {
+	for (int i = 0; i < num_crom; i++) {
+		for (int j = 0; j < num_loc; j++) {
+			*(generazione+i*num_loc+j) = rand() % num_loc; //genero un numero random compreso tra 0 e 9
+			for (int a = 0; a < j; a++) { //controllo che non ci siano ripetizioni
+				if (*(generazione + i * num_loc + j) == *(generazione + i * num_loc + a)) {
+					j--; //se ci sono ripetizioni torno indietro di una cella e esco dal ciclo, altrimenti vado avanti
+					break;
+				}
+			}
+		}
+	}
+}
+
+
 int main() {
 
 	srand(time(NULL));
@@ -88,9 +103,11 @@ int main() {
 		cout << endl;
 	}
 
-	//Creazione di 5 "cromosomi" random contenenti tutte le localit? senza ripetizione
+	//Creazione di 5 "cromosomi" random contenenti tutte le localita' senza ripetizione
 
 	int gen1[numero_cromosomi][numero_localita];
+
+#if 0
 
 	for (int i = 0; i < numero_cromosomi; i++) {
 		for (int j = 0; j < numero_localita; j++) {
@@ -103,6 +120,9 @@ int main() {
 			}
 		}
 	}
+#endif
+
+	crea_generazione((int*) gen1, numero_localita, numero_cromosomi );
 
 	//stampa la matrice di cromosomi
 	cout << "cromosomi: " << endl;
@@ -129,7 +149,7 @@ int main() {
 			b = a_cromosoma_temp[i + 1];
 			somma = distanze[a][b] + somma;
 		}
-		else if(i=numero_localita-1){
+		else if (i = numero_localita - 1) {
 			a = a_cromosoma_temp[i];
 			b = a_cromosoma_temp[0];
 			somma = distanze[a][b] + somma;
@@ -154,10 +174,10 @@ int main() {
 		a_cromosoma_riferimento[i] = gen1[cromosoma_riferimento][i];
 	}
 	//selezione del punto di slice
-	int punto_di_slice = 2;/*
-	while (punto_di_slice == 0) {
-		punto_di_slice = rand() % (numero_localita / 2);
-	}*/
+	int punto_di_slice = 0;
+		while (punto_di_slice == 0) {
+			punto_di_slice = rand() % (numero_localita / 2);
+		}
 
 	cout << "punto di slice: ";
 	cout << punto_di_slice << endl;
@@ -229,9 +249,9 @@ int main() {
 
 	int j = 0;
 	int temp;
-	while (j < punto_di_slice * 2) {
-		for (int i = 0; i < numero_localita - 1; i++) {
-			for (int k = j; k < punto_di_slice * 2; k++) {
+	while (j < punto_di_slice * 2 - 2) {
+		for (int i = 0; i < numero_localita; i++) {
+			for (int k = j; k < punto_di_slice * 2 - 2; k++) {
 				if (a_cromosoma_riferimento[i] == vettore_da_ricombinare[k]) {
 					temp = vettore_da_ricombinare[j];
 					vettore_da_ricombinare[j] = vettore_da_ricombinare[k];
@@ -271,25 +291,3 @@ int main() {
 
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
