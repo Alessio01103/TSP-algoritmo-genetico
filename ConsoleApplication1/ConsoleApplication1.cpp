@@ -9,9 +9,9 @@ int main() {
 
 	srand(time(NULL)); //inizializzo la funzione di generazione di numeri casuali
 
-	const int numero_localita = 10; //numero di localita'
-	const int numero_cromosomi = 10; //numero di cromosomi per ogni generazione
-	const int numero_generazioni = 20; //numero di generazioni
+	int numero_localita = 10; //numero di localita'
+	int numero_cromosomi = 10; //numero di cromosomi per ogni generazione
+	int numero_generazioni = 20; //numero di generazioni
 	int probabilita_mutazione = 50; //percentuale di probabilità che avvenga una mutazione all'interno di un cromosoma, compresa tra 0 e 100
 	int coordinate[numero_localita][2]; //matrice delle coordinate dei singoli punti
 	double distanze[numero_localita][numero_localita]; //matrice delle distanze tra ogni punto
@@ -117,13 +117,13 @@ int main() {
 
 	//Creazione di n "cromosomi" random contenenti tutte le localita senza ripetizione
 
-	int gen1[numero_cromosomi][numero_localita];
+	int generazione_corrente[numero_cromosomi][numero_localita];
 
 	for (int i = 0; i < numero_cromosomi; i++) {
 		for (int j = 0; j < numero_localita; j++) {
-			gen1[i][j] = rand() % numero_localita; //genero un numero random compreso tra 0 e 9
+			generazione_corrente[i][j] = rand() % numero_localita; //genero un numero random compreso tra 0 e 9
 			for (int a = 0; a < j; a++) { //controllo che non ci siano ripetizioni
-				if (gen1[i][j] == gen1[i][a]) {
+				if (generazione_corrente[i][j] == generazione_corrente[i][a]) {
 					j--; //se ci sono ripetizioni torno indietro di una cella e esco dal ciclo, altrimenti vado avanti
 					break;
 				}
@@ -135,7 +135,7 @@ int main() {
 	cout << "cromosomi: " << endl;
 	for (int i = 0; i < numero_cromosomi; i++) {
 		for (int j = 0; j < numero_localita; j++) {
-			cout << gen1[i][j] << " ";
+			cout << generazione_corrente[i][j] << " ";
 		}
 		cout << endl;
 	}
@@ -148,7 +148,7 @@ int main() {
 	double somme[numero_cromosomi][2];
 	for (int j = 0; j < numero_cromosomi; j++) {
 		for (int i = 0; i < numero_localita; i++) {
-			a_cromosoma_temp[i] = gen1[j][i];
+			a_cromosoma_temp[i] = generazione_corrente[j][i];
 		}
 		//sommo tutte le distanze tra una localita e la successiva
 		for (int i = 0; i < numero_localita; i++) {
@@ -181,38 +181,21 @@ int main() {
 			}
 		}
 	}
-	cout << endl;
-	for (int i = 0; i < numero_cromosomi; i++) {
-		cout << "cromosoma " << somme[i][0] << " distanza totale: " << somme[i][1] << endl;
-	}
 
 	int gen_ordinata[numero_cromosomi][numero_localita];
 	//riscrive i geni in ordine
 	for (int i = 0; i < numero_cromosomi; i++) {
 		for (int j = 0; j < numero_localita; j++) {
 			int f = somme[i][0];
-			gen_ordinata[i][j] = gen1[f][j];
+			gen_ordinata[i][j] = generazione_corrente[f][j];
 		}
 	}
 	//trascrivo i geni ordinati sulla matrice originale
 	for (int i = 0; i < numero_cromosomi; i++) {
 		for (int j = 0; j < numero_localita; j++) {
-			gen1[i][j] = gen_ordinata[i][j];
+			generazione_corrente[i][j] = gen_ordinata[i][j];
 		}
-		cout << endl;
 	}
-	//stampo i cromosomi
-	cout << "cromosomi ordinati: " << endl;
-	for (int i = 0; i < numero_cromosomi; i++) {
-		for (int j = 0; j < numero_localita; j++) {
-			cout << gen1[i][j] << " ";
-		}
-		cout << endl;
-
-	}
-	cout << endl;
-	cout << "-----------------------------" << endl;
-	cout << endl;
 
 	//selezione del punto di slice random
 	int punto_di_slice = 0;
@@ -220,199 +203,118 @@ int main() {
 		punto_di_slice = rand() % (numero_localita / 2);
 	}
 
-	vector<int> temp_dx0;
-	vector<int> vettore_da_ricombinare0;
-	vector<int> parte_centrale0;
+	vector<int> temp_dx_primo;
+	vector<int> vettore_da_ricombinare_primo;
+	vector<int> parte_centrale_primo;
 
-	vector<int> temp_dx1;
-	vector<int> vettore_da_ricombinare1;
-	vector<int> parte_centrale1;
+	vector<int> temp_dx_secondo;
+	vector<int> vettore_da_ricombinare_secondo;
+	vector<int> parte_centrale_secondo;
 
 	int primo_cromosoma = 0;
 	int secondo_cromosoma = 1;
 
-	int a_cromosoma_ricombinante0[numero_localita];
-	int a_cromosoma_riferimento0[numero_localita];
-	int a_cromosoma_ricombinante1[numero_localita];
-	int a_cromosoma_riferimento1[numero_localita];
-	int a_cromosoma_ricombinato0[numero_localita];
-	int a_cromosoma_ricombinato1[numero_localita];
+	int a_cromosoma_ricombinante_primo[numero_localita];
+	int a_cromosoma_riferimento_primo[numero_localita];
+	int a_cromosoma_ricombinante_secondo[numero_localita];
+	int a_cromosoma_riferimento_secondo[numero_localita];
+	int a_cromosoma_ricombinato_primo[numero_localita];
+	int a_cromosoma_ricombinato_secondo[numero_localita];
 
+	//inizio il ciclo che verrà ripetuto per il numero di generazioni che ho deciso in precedenza
 	for (int k = 0; k <= numero_generazioni; k++) {
 
+		//seleziono i primi due geni, il primo come cromosoma da ricombinare e il secondo come cromosoma di riferimento per il primo ciclo
 		for (int i = 0; i < numero_localita; i++) {
-			a_cromosoma_ricombinante0[i] = gen1[primo_cromosoma][i];
-			a_cromosoma_riferimento0[i] = gen1[secondo_cromosoma][i];
+			a_cromosoma_ricombinante_primo[i] = generazione_corrente[primo_cromosoma][i];
+			a_cromosoma_riferimento_primo[i] = generazione_corrente[secondo_cromosoma][i];
 		}
 
+		//seleziono i primi due geni, il primo come cromosoma di riferimento e il secondo come cromosoma da ricombinare per il secondo ciclo
 		for (int i = 0; i < numero_localita; i++) {
-			a_cromosoma_ricombinante1[i] = gen1[secondo_cromosoma][i];
-			a_cromosoma_riferimento1[i] = gen1[primo_cromosoma][i];
+			a_cromosoma_ricombinante_secondo[i] = generazione_corrente[secondo_cromosoma][i];
+			a_cromosoma_riferimento_secondo[i] = generazione_corrente[primo_cromosoma][i];
 		}
 
-
-		// inizio primo ciclo
+//INIZIO PRIMO CICLO
 	
-		// sezionamento del cromosoma in iniziale centrale e finale
-#if 1
+		// sezionamento della parte iniziale e finale del cromosoma
+		
 		//trovo l'estremo finale del cromosoma
 		for (int i = 0; i < punto_di_slice; i++) {
-			temp_dx0.push_back(a_cromosoma_ricombinante0[i]);
+			temp_dx_primo.push_back(a_cromosoma_ricombinante_primo[i]);
 		}
 
 		//trovo l'estremo iniziale del cromosoma
 		for (int i = numero_localita - 1; i >= numero_localita - punto_di_slice; i--) {
-			vettore_da_ricombinare0.push_back(a_cromosoma_ricombinante0[i]);
+			vettore_da_ricombinare_primo.push_back(a_cromosoma_ricombinante_primo[i]);
 		}
 		//trovo la parte centrale
 		for (int i = punto_di_slice; i < numero_localita - punto_di_slice; i++) {
-			parte_centrale0.push_back(a_cromosoma_ricombinante0[i]);
+			parte_centrale_primo.push_back(a_cromosoma_ricombinante_primo[i]);
 		}
-#endif
 
-#if 1
-		//stampa vector temp_dx
-		cout << "parte iniziale0:" << endl;
-
-		for (int i = 0; i < temp_dx0.size(); i++) {
-			cout << temp_dx0[i];
-		}
-		cout << endl;
-
-		//stampa vector temp_sx
-		cout << "parte finale0:" << endl;
-
-		for (int i = 0; i < vettore_da_ricombinare0.size(); i++) {
-			cout << vettore_da_ricombinare0[i];
-		}
-		cout << endl;
-
-		//stampa vector temp_sx
-		cout << "parte centrale0:" << endl;
-
-		for (int i = 0; i < parte_centrale0.size(); i++) {
-			cout << parte_centrale0[i];
-		}
-		cout << endl;
-#endif
-		vettore_da_ricombinare0.insert(vettore_da_ricombinare0.end(), temp_dx0.begin(), temp_dx0.end());
-
-#if 1
-		//stampa vector concatenato
-		cout << "parte iniziale e finale concatenata0:  " << endl;
-		for (int i = 0; i < punto_di_slice * 2; i++) {
-			cout << vettore_da_ricombinare0[i];
-		}
-#endif
-
+		vettore_da_ricombinare_primo.insert(vettore_da_ricombinare_primo.end(), temp_dx_primo.begin(), temp_dx_primo.end());
 
 		//bisogna prendere il vettore da ricombinare e riordinarlo in base al cromosoma numero 2
 
 		int j = 0;
-		int temp0;
+		int temp_primo;
 		while (j < punto_di_slice * 2) {
 			for (int i = 0; i < numero_localita; i++) {
 				for (int k = j; k < punto_di_slice * 2; k++) {
-					if (a_cromosoma_riferimento0[i] == vettore_da_ricombinare0[k]) {
-						temp0 = vettore_da_ricombinare0[j];
-						vettore_da_ricombinare0[j] = vettore_da_ricombinare0[k];
-						vettore_da_ricombinare0[k] = temp0;
+					if (a_cromosoma_riferimento_primo[i] == vettore_da_ricombinare_primo[k]) {
+						temp_primo = vettore_da_ricombinare_primo[j];
+						vettore_da_ricombinare_primo[j] = vettore_da_ricombinare_primo[k];
+						vettore_da_ricombinare_primo[k] = temp_primo;
 						j++;
 					}
 				}
 			}
 		}
 
-		cout << endl << "parte iniziale e finale riordinata0:  " << endl;
-		for (int i = 0; i < punto_di_slice * 2; i++) {
-			cout << vettore_da_ricombinare0[i];
-		}
-#if 1
-		cout << endl;
+		//"ricostruisco" il cromosoma, unendo gli estremi con le parti centrali
 
 		for (int i = 0; i < punto_di_slice; i++) {
-			a_cromosoma_ricombinato0[i] = vettore_da_ricombinare0[i];
+			a_cromosoma_ricombinato_primo[i] = vettore_da_ricombinare_primo[i];
 		}
 
-		for (int i = 0; i < parte_centrale0.size(); i++) {
-			a_cromosoma_ricombinato0[i + punto_di_slice] = parte_centrale0[i];
+		for (int i = 0; i < parte_centrale_primo.size(); i++) {
+			a_cromosoma_ricombinato_primo[i + punto_di_slice] = parte_centrale_primo[i];
 		}
 
 		for (int i = punto_di_slice; i < punto_di_slice * 2; i++) {
-			a_cromosoma_ricombinato0[i + parte_centrale0.size()] = vettore_da_ricombinare0[i];
+			a_cromosoma_ricombinato_primo[i + parte_centrale_primo.size()] = vettore_da_ricombinare_primo[i];
 		}
 
 		//mutazione
 		int mut0 = rand() % 100;
 		if (mut0 > 100 - probabilita_mutazione) {
 			int nucleotide = rand() % numero_localita;
-			a_cromosoma_ricombinato0[nucleotide] = rand() % numero_localita;
+			a_cromosoma_ricombinato_primo[nucleotide] = rand() % numero_localita;
 		}
-			
-		cout << "cromosoma riordinato0" << endl;
-		for (int i = 0; i < numero_localita; i++) {
-			cout << a_cromosoma_ricombinato0[i];
-		}
+
 		cout << "" << endl;
-#endif
 
-		cout << "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" << endl;
-
-// inizio secondo ciclo
-
+//INIZIO SECONDO CICLO
 
 		// sezionamento del cromosoma in iniziale centrale e finale
-#if 1
+
 		//trovo l'estremo finale del cromosoma
 		for (int i = 0; i < punto_di_slice; i++) {
-			temp_dx1.push_back(a_cromosoma_ricombinante1[i]);
+			temp_dx_secondo.push_back(a_cromosoma_ricombinante_secondo[i]);
 		}
 
 		//trovo l'estremo iniziale del cromosoma
 		for (int i = numero_localita - 1; i >= numero_localita - punto_di_slice; i--) {
-			vettore_da_ricombinare1.push_back(a_cromosoma_ricombinante1[i]);
+			vettore_da_ricombinare_secondo.push_back(a_cromosoma_ricombinante_secondo[i]);
 		}
 		//trovo la parte centrale
 		for (int i = punto_di_slice; i < numero_localita - punto_di_slice; i++) {
-			parte_centrale1.push_back(a_cromosoma_ricombinante1[i]);
+			parte_centrale_secondo.push_back(a_cromosoma_ricombinante_secondo[i]);
 		}
-#endif
 
-#if 1
-		//stampa vector temp_dx
-		cout << "parte iniziale1:" << endl;
-
-		for (int i = 0; i < temp_dx1.size(); i++) {
-			cout << temp_dx1[i];
-		}
-		cout << endl;
-
-		//stampa vector temp_sx
-		cout << "parte finale1:" << endl;
-
-		for (int i = 0; i < vettore_da_ricombinare1.size(); i++) {
-			cout << vettore_da_ricombinare1[i];
-		}
-		cout << endl;
-
-		//stampa vector temp_sx
-		cout << "parte centrale1:" << endl;
-
-		for (int i = 0; i < parte_centrale1.size(); i++) {
-			cout << parte_centrale1[i];
-		}
-		cout << endl;
-#endif
-		vettore_da_ricombinare1.insert(vettore_da_ricombinare1.end(), temp_dx1.begin(), temp_dx1.end());
-
-#if 1
-		//stampa vector concatenato
-		cout << "parte iniziale e finale concatenata1:  " << endl;
-		for (int i = 0; i < punto_di_slice * 2; i++) {
-			cout << vettore_da_ricombinare1[i];
-		}
-#endif
-
+		vettore_da_ricombinare_secondo.insert(vettore_da_ricombinare_secondo.end(), temp_dx_secondo.begin(), temp_dx_secondo.end());
 
 		//bisogna prendere il vettore da ricombinare e riordinarlo in base al cromosoma numero 2
 
@@ -421,33 +323,28 @@ int main() {
 		while (h < punto_di_slice * 2) {
 			for (int i = 0; i < numero_localita; i++) {
 				for (int k = h; k < punto_di_slice * 2; k++) {
-					if (a_cromosoma_riferimento1[i] == vettore_da_ricombinare1[k]) {
-						temp1 = vettore_da_ricombinare1[h];
-						vettore_da_ricombinare1[h] = vettore_da_ricombinare1[k];
-						vettore_da_ricombinare1[k] = temp1;
+					if (a_cromosoma_riferimento_secondo[i] == vettore_da_ricombinare_secondo[k]) {
+						temp1 = vettore_da_ricombinare_secondo[h];
+						vettore_da_ricombinare_secondo[h] = vettore_da_ricombinare_secondo[k];
+						vettore_da_ricombinare_secondo[k] = temp1;
 						h++;
 					}
 				}
 			}
 		}
 
-		cout << endl << "parte iniziale e finale riordinata1:  " << endl;
-		for (int i = 0; i < punto_di_slice * 2; i++) {
-			cout << vettore_da_ricombinare1[i];
-		}
-#if 1
 		cout << endl;
 
 		for (int i = 0; i < punto_di_slice; i++) {
-			a_cromosoma_ricombinato1[i] = vettore_da_ricombinare1[i];
+			a_cromosoma_ricombinato_secondo[i] = vettore_da_ricombinare_secondo[i];
 		}
 
-		for (int i = 0; i < parte_centrale0.size(); i++) {
-			a_cromosoma_ricombinato1[i + punto_di_slice] = parte_centrale1[i];
+		for (int i = 0; i < parte_centrale_primo.size(); i++) {
+			a_cromosoma_ricombinato_secondo[i + punto_di_slice] = parte_centrale_secondo[i];
 		}
 
 		for (int i = punto_di_slice; i < punto_di_slice * 2; i++) {
-			a_cromosoma_ricombinato1[i + parte_centrale1.size()] = vettore_da_ricombinare1[i];
+			a_cromosoma_ricombinato_secondo[i + parte_centrale_secondo.size()] = vettore_da_ricombinare_secondo[i];
 		}
 
 		//mutazione
@@ -455,23 +352,16 @@ int main() {
 		int mut1 = rand() % 100;
 		if (mut1 > 100 - probabilita_mutazione) {
 			int nucleotide = rand() % numero_localita;
-			a_cromosoma_ricombinato1[nucleotide] = rand() % numero_localita;
+			a_cromosoma_ricombinato_secondo[nucleotide] = rand() % numero_localita;
 		}
 
-		cout << "cromosoma riordinato1" << endl;
 		for (int i = 0; i < numero_localita; i++) {
-			cout << a_cromosoma_ricombinato1[i];
-		}
-		cout << "" << endl;
-#endif
-
-		for (int i = 0; i < numero_localita; i++) {
-			gen1[primo_cromosoma][i] = a_cromosoma_ricombinato0[i];
-			gen1[secondo_cromosoma][i] = a_cromosoma_ricombinato1[i];
+			generazione_corrente[primo_cromosoma][i] = a_cromosoma_ricombinato_primo[i];
+			generazione_corrente[secondo_cromosoma][i] = a_cromosoma_ricombinato_secondo[i];
 		}
 
 		//funzione di fitness
-#if 1
+
 		double somma = 0;
 		int a_cromosoma_temp[numero_localita];
 		int a;
@@ -479,7 +369,7 @@ int main() {
 		double somme[numero_cromosomi][2];
 		for (int j = 0; j < numero_cromosomi; j++) {
 			for (int i = 0; i < numero_localita; i++) {
-				a_cromosoma_temp[i] = gen1[j][i];
+				a_cromosoma_temp[i] = generazione_corrente[j][i];
 			}
 
 			for (int i = 0; i < numero_localita; i++) {
@@ -496,7 +386,6 @@ int main() {
 			}
 			somme[j][0] = j;
 			somme[j][1] = somma;
-			cout << "cromosoma " << somme[j][0] << " distanza totale: " << somme[j][1] << endl;
 			somma = 0;
 		}
 
@@ -522,58 +411,29 @@ int main() {
 		for (int i = 0; i < numero_cromosomi; i++) {
 			for (int j = 0; j < numero_localita; j++) {
 				int f = somme[i][0];
-				gen_ordinata[i][j] = gen1[f][j];
+				gen_ordinata[i][j] = generazione_corrente[f][j];
 			}
 		}
 
 		for (int i = 0; i < numero_cromosomi; i++) {
 			for (int j = 0; j < numero_localita; j++) {
-				gen1[i][j] = gen_ordinata[i][j];
+				generazione_corrente[i][j] = gen_ordinata[i][j];
 			}
 			cout << endl;
 		}
 
-		cout << "cromosomi ordinati: " << endl;
-		for (int i = 0; i < numero_cromosomi; i++) {
-			for (int j = 0; j < numero_localita; j++) {
-				cout << gen1[i][j] << " ";
-			}
-			cout << endl;
-				
-		}
 		cout << endl;
 		cout << "-----------------------------" << endl;
 		cout << endl;
 
-		temp_dx0.clear();
-		vettore_da_ricombinare0.clear();
-		parte_centrale0.clear();
+		temp_dx_primo.clear();
+		vettore_da_ricombinare_primo.clear();
+		parte_centrale_primo.clear();
 
-		temp_dx1.clear();
-		vettore_da_ricombinare1.clear();
-		parte_centrale1.clear();
-#endif
+		temp_dx_secondo.clear();
+		vettore_da_ricombinare_secondo.clear();
+		parte_centrale_secondo.clear();
+
 	}
 	return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
